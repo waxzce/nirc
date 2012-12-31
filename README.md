@@ -1,7 +1,10 @@
 **Curently instable, be back in just a few weeks or watch http://blog.clever-cloud.com**
 
 !Intro
-This project is an IRC client design for always on connection writen with nodejs
+nirc (node irc) is an irc client. Main features are :
+* always connected 
+* store hostory 
+* web based
 
 All the messages are stored into a postgre database 
 
