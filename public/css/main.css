@@ -1,0 +1,60 @@
+body{
+	margin-top:30px;
+}
+.message-pane{
+	margin-top:30px;
+}
+.username{
+	width:130px;
+	text-align:right;
+	color:#999999;
+	display:block;
+	float:left;
+	margin-right:3px;
+}
+
+.wellhidden{
+	display:none;
+}
+.irc_line{
+   width:90%;
+}
+
+.send_message{
+	position:fixed;
+	width:74%;
+	bottom:0px;
+	right:0px;
+}
+
+.write_message{
+   padding-bottom:40px;
+}
+
+#login_modal form{
+margin:0;
+}
+
+.highlight {
+background-color: #FFFF88;
+}
+
+#main_menu{
+position:fixed;
+min-width:19%;
+}
+.mdate{
+color:#999999;
+visibility:hidden;
+float:right;
+}
+.irc_line:hover .mdate{
+visibility:visible;
+}
+
+/*
+.tab-message-pane{
+height:100%;
+background:#eeeeee;
+}
+*/
