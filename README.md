@@ -1,6 +1,6 @@
 **Curently instable, be back in just a few weeks or watch http://blog.clever-cloud.com**
 
-!Intro
+#Intro
 nirc (node irc) is an irc client. Main features are :
 * always connected 
 * store hostory 
@@ -8,7 +8,7 @@ nirc (node irc) is an irc client. Main features are :
 
 All the messages are stored into a postgre database 
 
-!Setup
+#Setup
 
 	cp conf.sample.js conf.js
 
@@ -22,7 +22,7 @@ execute the init.sql file into your pg database
 or deploy it on the http://www.clever-cloud.com with just a git push :-)
 
 
-!TODO
+#TODO
 * display notification message
 * display members of the chan
 * allow to connect to password protected chan
