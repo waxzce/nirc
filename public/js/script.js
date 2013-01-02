@@ -41,6 +41,7 @@ var init_co = _.bind(function(){
 		console.log('refresh time');
 		
 		socket.emit('get_old_message', {});
+		socket.emit('get_connected_users', {});
 	});
 	socket.on('new_message', _.bind(function (m) {	
 		var pn = paneNamer(m.server.server, m.to);
@@ -49,10 +50,21 @@ var init_co = _.bind(function(){
 	
 	socket.on('new_old_message', _.bind(function (m) {	
 		var pn = m.chan_name;
-		m['from'] = m.username; 
-		m['message'] = m.content; 
+		m['from'] = m.username;
+		m['message'] = m.content;
 		print_message(m,pn);
   	},this));
+
+	socket.on('nicks', _.bind(function (m) {
+		_.each(m, function(elt) {
+			var html = "";
+			var domElt = "#" + paneNamer(elt.server, elt.chan) + " .nicks-pane";
+			_.each(elt.users, function(nick){
+				html += '<div class="nick-pane-elt" id="username_' + nick + '">' + nick + '</div>';
+			});
+			$(domElt).html(html);
+		});
+	}, this));
 	
 	socket.on('new_message', _.bind(function (m) {	
 		last_message_date = m.time;
@@ -78,7 +90,7 @@ var init_co = _.bind(function(){
 				  var c = s.options.channels[ii];
 				  var pane_name = paneNamer(s.server, c);
 				  $('#chan_nav').append('<li><a href="#'+pane_name+'" data-toggle="pill" id="pills_for_'+pane_name+'">'+c+' <span class="badge">0</span></a></li>');
-				  $('#chan_pane').append('<div id="'+pane_name+'" class="tab-pane tab-message-pane"><div class="write_message"></div></div>');
+				  $('#chan_pane').append('<div id="'+pane_name+'" class="tab-pane tab-message-pane"><div class="write_message"></div><div class="nicks-pane"></div></div>');
 				  $('#chan_pane div.tab-pane:last').append($('.wellhidden .send_message').clone());
 				  $('#chan_pane div.tab-pane:last').data('ircinfo',{server:s,chat:c});
 			  }
