@@ -97,6 +97,14 @@ var db_reccord = function (m) {
   		});
 };
 
+var join_channel = function(channel, nick, message) {
+  io.sockets.emit("join", {"server": this.opt.server.replace(/\./g,'-'), "channel": channel, "nick": nick, "message": message });
+}
+
+var left_channel = function(channel, nick, message) {
+  io.sockets.emit("left", {"server": this.opt.server.replace(/\./g,'-'), "channel": channel, "nick": nick, "message": message });
+}
+
 var paneNamer = function(servername, channame){
 	return servername.replace(/\./g,'-') + "___" + channame.replace('#','_');
 };
@@ -116,6 +124,8 @@ for(var i in clients_irc){
 	c.addListener('message',new_messenger.bind(c));
 	c.addListener('new_message',socketsend);
 	c.addListener('new_message',db_reccord);
+  c.addListener('join',join_channel);
+  c.addListener('part',left_channel);
 }
 
 io.set('authorization', function (data, accept) {

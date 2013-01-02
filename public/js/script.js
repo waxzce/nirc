@@ -34,6 +34,10 @@ var print_message = function(m,pn){
 //	$('#'+pn + ' div.write_message').append(e);
 };
 
+var htmlUserPaneDiv = function(nick) {
+	return '<div class="nick-pane-elt username_' + nick + '">' + nick + '</div>';
+}
+
 var init_co = _.bind(function(){
 	var socket = io.connect();//window.location.protocol+ '://'+window.location.host+'/'); //+(window.location.port != 80 ? ':'+window.location.port : '')
 	
@@ -60,7 +64,7 @@ var init_co = _.bind(function(){
 			var html = "";
 			var domElt = "#" + paneNamer(elt.server, elt.chan) + " .nicks-pane";
 			_.each(elt.users, function(nick){
-				html += '<div class="nick-pane-elt" id="username_' + nick + '">' + nick + '</div>';
+				html += htmlUserPaneDiv(nick);
 			});
 			$(domElt).html(html);
 		});
@@ -123,6 +127,22 @@ var init_co = _.bind(function(){
 		var ee = $('#pills_for_' + pn + ' span.badge');
 		ee.text(parseInt(ee.text(),10)+1);
 	});
+
+	socket.on('join', _.bind(function (m) {
+		var pn = paneNamer(m.server, m.channel);
+		var domElt = $("#" + pn + " " + ".username_" + m.nick);
+		if (domElt.length == 0) {
+			$('#'+ pn + ' div.write_message').append('<div class="irc_line">' + m.nick + ' joined !</div>');
+			$("#" + pn + " " + ".nicks-pane").append(htmlUserPaneDiv(m.nick));
+		}
+	},this));
+
+	socket.on('left', _.bind(function (m) {
+		var pn = paneNamer(m.server, m.channel);
+		var domElt = $("#" + pn + " " + ".username_" + m.nick);
+		domElt.remove();
+		$('#'+ pn + ' div.write_message').append('<div class="irc_line">' + m.nick + ' left !</div>');
+	},this));
 	
 },this);
 var login_function = _.bind(function(){
