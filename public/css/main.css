@@ -1,9 +1,12 @@
+/*
 body{
 	margin-top:30px;
 }
+
 .message-pane{
 	margin-top:30px;
-}
+}*/
+
 .username{
 	width:130px;
 	text-align:right;
@@ -58,7 +61,6 @@ visibility:visible;
 
 .nicks-pane{
 	padding : 5px;
-	margin-top: 30px;
 	position: absolute;
 	padding-right: 20px;
 	right: 0px;
