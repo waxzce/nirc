@@ -27,3 +27,7 @@ or deploy it on the http://www.clever-cloud.com with just a git push :-)
 * display members of the chan
 * allow to connect to password protected chan
 * allow PM
+
+
+#DONE
+* nick display (thx to regisfoucault)

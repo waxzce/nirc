@@ -1,9 +1,12 @@
+/*
 body{
 	margin-top:30px;
 }
+
 .message-pane{
 	margin-top:30px;
-}
+}*/
+
 .username{
 	width:130px;
 	text-align:right;
@@ -57,10 +60,14 @@ visibility:visible;
 }
 
 .nicks-pane{
-	margin-top: 30px;
+	padding : 5px;
 	position: absolute;
-	right: 20px;
-	top: 20px;
+	padding-right: 20px;
+	right: 0px;
+	padding-top: 20px;
+	top: 0px;
+	background-color:#E3E3E3;
+	min-width:100px;
 }
 /*
 .tab-message-pane{
