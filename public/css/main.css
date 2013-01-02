@@ -57,10 +57,15 @@ visibility:visible;
 }
 
 .nicks-pane{
+	padding : 5px;
 	margin-top: 30px;
 	position: absolute;
-	right: 20px;
-	top: 20px;
+	padding-right: 20px;
+	right: 0px;
+	padding-top: 20px;
+	top: 0px;
+	background-color:#E3E3E3;
+	min-width:100px;
 }
 /*
 .tab-message-pane{
