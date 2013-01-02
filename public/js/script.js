@@ -10,7 +10,7 @@ var sessionTK = '';
 var print_message = function(m,pn){
 	var h = hex_md5(pn+m.from+m.mdate+m.message);
 	if($('#messageid_'+h).length == 0){
-	var e = $('<div class="irc_line" id="messageid_+'+h+'"><span class="username">'+m.from+' : </span><span class="message">'+m.message+'</span><span class="mdate">'+moment(m.mdate).fromNow()+'</span></div>');
+	var e = $('<div class="irc_line" id="messageid_'+h+'"><span class="username">'+m.from+' : </span><span class="message">'+m.message+'</span><span class="mdate">'+moment(m.mdate).fromNow()+'</span></div>');
 	var esan = e.find('span.message');
 //	$('#'+pn + ' div.write_message').append('<div class="irc_line"><span class="username">'+m.from+' : </span><span class="message">'+m.message+'</span></div>');
 //	$('#'+pn + ' div.write_message .irc_line:not(.linkify_done) span.message').highlight(hw_conf,{ wordsOnly: true });
