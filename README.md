@@ -3,7 +3,7 @@
 #Intro
 nirc (node irc) is an irc client. Main features are :
 * always connected 
-* store history 
+* store history
 * web based
 
 All the messages are stored into a postgre database 

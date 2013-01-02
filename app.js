@@ -176,7 +176,18 @@ io.sockets.on('connection', function (socket) {
 		}
 		
    });
-	
-	
+
+  socket.on('get_connected_users', function(e){
+    var nicks = [];
+    __.each(config.servers, function(s, index, list){
+      var serverName = s.server.replace(/\./g, '-');
+      var chans = clients_irc[serverName].chans;
+      __.each(__.values(chans), function(elt) {
+        var temp = {"server": serverName, "chan": elt.key, "users": __.keys(elt.users)};
+        nicks.push(temp);
+      });
+    });
+    socket.emit("nicks", nicks);
+  });
 	
 });

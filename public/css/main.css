@@ -52,6 +52,16 @@ float:right;
 visibility:visible;
 }
 
+.write_message{
+	width: 80%;
+}
+
+.nicks-pane{
+	margin-top: 30px;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
 /*
 .tab-message-pane{
 height:100%;
