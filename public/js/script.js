@@ -132,7 +132,6 @@ var init_co = _.bind(function(){
 		var pn = paneNamer(m.server, m.channel);
 		var domElt = $("#" + pn + " " + ".username_" + m.nick);
 		if (domElt.length == 0) {
-			$('#'+ pn + ' div.write_message').append('<div class="irc_line">' + m.nick + ' joined !</div>');
 			$("#" + pn + " " + ".nicks-pane").append(htmlUserPaneDiv(m.nick));
 		}
 	},this));
@@ -141,7 +140,6 @@ var init_co = _.bind(function(){
 		var pn = paneNamer(m.server, m.channel);
 		var domElt = $("#" + pn + " " + ".username_" + m.nick);
 		domElt.remove();
-		$('#'+ pn + ' div.write_message').append('<div class="irc_line">' + m.nick + ' left !</div>');
 	},this));
 	
 },this);
