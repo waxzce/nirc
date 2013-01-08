@@ -1,45 +1,62 @@
+var App = {};
+
 (function(){
-var paneNamer = function(servername, channame){
+
+App.paneNamer = function(servername, channame){
 	return servername.replace(/\./g,'-') + "___" + channame.replace('#','_');
+}
+
+App.attachNicks = function(server, chan, nicks) {
+	var html = "";
+	var domElt = "#" + App.paneNamer(server, chan) + " .nicks-pane";
+	_.each(nicks, function(nick){
+		html += App.htmlUserPaneDiv(nick);
+	});
+	$(domElt).html(html);
+}
+
+App.htmlUserPaneDiv = function(nick) {
+	return '<div class="nick-pane-elt username_' + nick + '">' + nick + '</div>';
 }
 
 var last_message_date = 0;
 var hw_conf = [];
 var sessionTK = '';
-
-var print_message = function(m,pn){
-	var h = hex_md5(pn+m.from+m.mdate+m.message);
-	if($('#messageid_'+h).length == 0){
-		var e = $('<div class="irc_line" id="messageid_'+h+'"><span class="username">'+m.from+' : </span><span class="message">'+m.message+'</span><span class="mdate">'+moment(m.mdate).fromNow()+'</span></div>');
-		var esan = e.find('span.message');
-	//	$('#'+pn + ' div.write_message').append('<div class="irc_line"><span class="username">'+m.from+' : </span><span class="message">'+m.message+'</span></div>');
-	//	$('#'+pn + ' div.write_message .irc_line:not(.linkify_done) span.message').highlight(hw_conf,{ wordsOnly: true });
-		esan.highlight(hw_conf,{ wordsOnly: true });
-		esan.linkify({target:'_blank'});
-		e.addClass('linkify_done').data('message',m);
-		var lines = $('#'+pn + ' div.write_message .irc_line');
-		var d = new Date(m.mdate);
-		var inserted  = false;
-		for(var i = lines.length - 1 ; i >= 0; i--){
-			if(new Date($(lines[i]).data('message').mdate) < d){
-				inserted = true;
-				e.insertAfter(lines[i]);
-				break;
-			}
-		}
-		if(!inserted){
-			$('#'+pn + ' div.write_message').prepend(e);
-		}
-	}
-//	$('#'+pn + ' div.write_message').append(e);
-};
-
-var htmlUserPaneDiv = function(nick) {
-	return '<div class="nick-pane-elt username_' + nick + '">' + nick + '</div>';
-}
+App.Views = {};
+App.Models = {};
+App.createdViews = {};
 
 var init_co = _.bind(function(){
+
 	var socket = io.connect();//window.location.protocol+ '://'+window.location.host+'/'); //+(window.location.port != 80 ? ':'+window.location.port : '')
+	App.socket = socket;
+
+	App.createdViews.LeftNav = new App.Views.LeftNav();
+	App.createdViews.ChanPane = new App.Views.ChanPane();
+	var print_message = function(m,pn){
+		var h = hex_md5(pn+m.from+m.mdate+m.message);
+		if($('#messageid_'+h).length == 0){
+			var e = $('<div class="irc_line" id="messageid_'+h+'"><span class="username">'+m.from+' : </span><span class="message">'+m.message+'</span><span class="mdate">'+moment(m.mdate).fromNow()+'</span></div>');
+			var esan = e.find('span.message');
+			esan.highlight(hw_conf,{ wordsOnly: true });
+			esan.linkify({target:'_blank'});
+			e.addClass('linkify_done').data('message',m);
+			var lines = $('#'+pn + ' div.write_message .irc_line');
+			var d = new Date(m.mdate);
+			var inserted  = false;
+			for(var i = lines.length - 1 ; i >= 0; i--){
+				if(new Date($(lines[i]).data('message').mdate) < d){
+					inserted = true;
+					e.insertAfter(lines[i]);
+					break;
+				}
+			}
+			if(!inserted){
+				$('#'+pn + ' div.write_message').prepend(e);
+			}
+		}
+	//	$('#'+pn + ' div.write_message').append(e);
+	};
 	
 	socket.on('connect', function(){
 		console.log('refresh time');
@@ -47,8 +64,16 @@ var init_co = _.bind(function(){
 		socket.emit('get_old_message', {});
 		socket.emit('get_connected_users', {});
 	});
-	socket.on('new_message', _.bind(function (m) {	
-		var pn = paneNamer(m.server.server, m.to);
+
+	socket.on('new_message', _.bind(function (m) {
+		if (m.to == m.server.nick) {
+			var pn = App.paneNamer(m.server.server, m.from);
+			if ($(pn).length == 0) {
+				App.createdViews.ChanPane.openPrivatePane(m.from, m, pn, [m.to, m.from]);
+			}
+		} else {
+			var pn = App.paneNamer(m.server.server, m.to);
+		}
 		print_message(m,pn);
 	},this));
 	
@@ -61,12 +86,7 @@ var init_co = _.bind(function(){
 
 	socket.on('nicks', _.bind(function (m) {
 		_.each(m, function(elt) {
-			var html = "";
-			var domElt = "#" + paneNamer(elt.server, elt.chan) + " .nicks-pane";
-			_.each(elt.users, function(nick){
-				html += htmlUserPaneDiv(nick);
-			});
-			$(domElt).html(html);
+			App.attachNicks(elt.server, elt.chan, elt.users);
 		});
 	}, this));
 	
@@ -80,7 +100,7 @@ var init_co = _.bind(function(){
 	  success: _.bind(function(hw) {
 		  hw_conf = hw;
 	  },this)
-   });
+  });
 	
 	$.ajax({
 	  url: '/irc_conf',
@@ -92,57 +112,47 @@ var init_co = _.bind(function(){
 			  $('#chan_nav').append('<li class="nav-header">'+s.server+'</li>');
 			  for(var ii in s.options.channels){
 				  var c = s.options.channels[ii];
-				  var pane_name = paneNamer(s.server, c);
-				  $('#chan_nav').append('<li><a href="#'+pane_name+'" data-toggle="pill" id="pills_for_'+pane_name+'">'+c+' <span class="badge">0</span></a></li>');
-				  $('#chan_pane').append('<div id="'+pane_name+'" class="tab-pane tab-message-pane"><div class="write_message"></div><div class="nicks-pane"></div></div>');
-				  $('#chan_pane div.tab-pane:last').append($('.wellhidden .send_message').clone());
-				  $('#chan_pane div.tab-pane:last').data('ircinfo',{server:s,chat:c});
+				  var pane_name = App.paneNamer(s.server, c);
+				  App.createdViews.LeftNav.addChannel(pane_name, c);
+				  App.createdViews.ChanPane.addChannel(pane_name, s, c);
 			  }
 		  }
-		  $('.send_message form').submit(function(e){
-			  e.stopPropagation();
-			  e.preventDefault();
-			  var newmesstag = $(e.target).find('input.sended_message');
-			  if(newmesstag.val() != ''){
-			  	var y = $(e.target).parents('div.tab-pane').data('ircinfo');
-			  	socket.emit('publish_message', {
-					  message:newmesstag.val(),
-				  	  server:y
-				});
-			   newmesstag.val('');
-			  }
-		  });
 		  $().tab();
-	     $('a[data-toggle="pill"]').on('shown', function (e) {
-	     		$(e.target).find('span.badge').text(0); // activated tab
+	    $('a[data-toggle="pill"]').on('shown', function (e) {
+				$(e.target).find('span.badge').text(0); // activated tab
 		  })	
 	  }
 	});
 	
-	
-	
 	// unread count management
-	socket.on('new_message', function (m) {	
-		var pn = paneNamer(m.server.server, m.to);
+	socket.on('new_message', function (m) {
+		var chan;
+		if (m.to == m.server.nick) {
+			chan = m.from;
+		} else {
+			chan = m.to;
+		}
+		var pn = App.paneNamer(m.server.server, chan);
 		var ee = $('#pills_for_' + pn + ' span.badge');
 		ee.text(parseInt(ee.text(),10)+1);
 	});
 
 	socket.on('join', _.bind(function (m) {
-		var pn = paneNamer(m.server, m.channel);
+		var pn = App.paneNamer(m.server, m.channel);
 		var domElt = $("#" + pn + " " + ".username_" + m.nick);
 		if (domElt.length == 0) {
-			$("#" + pn + " " + ".nicks-pane").append(htmlUserPaneDiv(m.nick));
+			$("#" + pn + " " + ".nicks-pane").append(App.htmlUserPaneDiv(m.nick));
 		}
 	},this));
 
 	socket.on('left', _.bind(function (m) {
-		var pn = paneNamer(m.server, m.channel);
+		var pn = App.paneNamer(m.server, m.channel);
 		var domElt = $("#" + pn + " " + ".username_" + m.nick);
 		domElt.remove();
 	},this));
-	
+
 },this);
+
 var login_function = _.bind(function(){
 	  $('#login_modal').modal('show');
 	  $('#login_modal form').submit(function(e){
