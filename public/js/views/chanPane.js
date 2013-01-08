@@ -18,7 +18,7 @@ App.Views.ChanPane = Backbone.View.extend({
 
   openPrivatePane: function(username, server, pane_name, users) {
     if ($('#' + pane_name).length == 0 && username !== server.server.nickname) {
-      App.createdViews.LeftNav.addChannel(pane_name, username);
+      App.createdViews.LeftNav.addPrivateChannel(pane_name, username);
       this.addChannel(pane_name, server.server, username);
       App.attachNicks(server.server.server, username, users);
     }
