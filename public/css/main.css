@@ -7,6 +7,10 @@ body{
 	margin-top:30px;
 }*/
 
+.container-fluid{
+padding:0px;
+}
+
 .username{
 	width:130px;
 	text-align:right;
