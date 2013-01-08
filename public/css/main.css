@@ -7,6 +7,10 @@ body{
 	margin-top:30px;
 }*/
 
+* {
+font-size:12px;
+}
+
 .container-fluid{
 padding:0px;
 }
@@ -110,6 +114,7 @@ html, body {
 	bottom: 0px;
 	width: 100%;
 	height: 22%;
+	border-top: #333333 2px solid;
 }
 
 .icon-remove {
