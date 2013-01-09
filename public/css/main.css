@@ -75,7 +75,6 @@ visibility:visible;
 	width: 11%;
 	*/
 	overflow-y: scroll;
-	max-height:40%;
 }
 
 .nick-pane-elt {
@@ -97,7 +96,7 @@ visibility:visible;
 }
 
 .message-pane{
-	height: 80%;
+	height: 100%;
 }
 
 #chan_pane {
@@ -122,4 +121,12 @@ html, body {
 
 .icon-remove {
 	float: right;
+}
+#nick-tabs{
+overflow:auto;
+max-height:40%;
+
+}
+.height100{
+height:100%;
 }
