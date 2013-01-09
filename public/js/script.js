@@ -8,7 +8,7 @@ App.paneNamer = function(servername, channame){
 
 App.attachNicks = function(server, chan, nicks) {
 	var html = "";
-	var domElt = "#" + App.paneNamer(server, chan) + " .nicks-pane";
+	var domElt = "#nicks_" + App.paneNamer(server, chan);
 	_.each(nicks, function(nick){
 		html += App.htmlUserPaneDiv(nick);
 	});
@@ -118,9 +118,14 @@ var init_co = _.bind(function(){
 			  }
 		  }
 		  $().tab();
-	    $('a[data-toggle="pill"]').on('shown', function (e) {
-				$(e.target).find('span.badge').text(0); // activated tab
-		  })	
+		 $('#nick-tabs .nicks-pane').css('display','none');
+ 	    $('a[data-toggle="pill"]').on('shown', function (e) {
+ 				$(e.target).find('span.badge').text(0); // activated tab
+ 		  });	
+ 	    $('a[data-toggle="pill"]').on('shown', function (e) {
+			 $('#nick-tabs .nicks-pane').css('display','none');
+ 			 $('#nicks_'+$(e.target).attr('href').substring(1)).css('display','block'); // activated tab
+ 		  });	
 	  }
 	});
 	
@@ -141,7 +146,7 @@ var init_co = _.bind(function(){
 		var pn = App.paneNamer(m.server, m.channel);
 		var domElt = $("#" + pn + " " + ".username_" + m.nick);
 		if (domElt.length == 0) {
-			$("#" + pn + " " + ".nicks-pane").append(App.htmlUserPaneDiv(m.nick));
+			$("#nicks_" + pn).append(App.htmlUserPaneDiv(m.nick));
 		}
 	},this));
 

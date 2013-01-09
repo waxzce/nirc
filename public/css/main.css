@@ -65,14 +65,17 @@ visibility:visible;
 }
 
 .nicks-pane{
+/*
 	position: absolute;
 	right: 0px;
 	top: 0px;
 	background-color:#f5f5f5;
 	min-width:100px;
-	overflow-y: scroll;
 	height: 70%;
 	width: 11%;
+	*/
+	overflow-y: scroll;
+	max-height:40%;
 }
 
 .nick-pane-elt {

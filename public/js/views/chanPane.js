@@ -26,7 +26,8 @@ App.Views.ChanPane = Backbone.View.extend({
   },
 
   addChannel: function(pane_name, s, c) {
-    $('#chan_pane').append('<div id="'+pane_name+'" class="tab-pane tab-message-pane"><div class="write_message"></div><div class="nicks-pane"></div></div>');
+    $('#chan_pane').append('<div id="'+pane_name+'" class="tab-pane tab-message-pane"><div class="write_message"></div></div>');
+	 $('#nick-tabs').append('<div id="nicks_'+pane_name+'" class="nicks-pane"></div>');
     $('#chan_pane div.tab-pane:last').append($('.wellhidden .send_message').clone());
     $('#chan_pane div.tab-pane:last').data('ircinfo',{server:s,chat:c});
     $('#' + pane_name + ' .send_message form').submit(function(e){
