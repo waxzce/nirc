@@ -3,7 +3,24 @@ App.Views.LeftNav = Backbone.View.extend({
 
   events: {
     "click .icon-remove": "removePrivateChannel",
-    "click .nick-pane-elt": "preOpenPrivatePane"
+    "click .nick-pane-elt": "preOpenPrivatePane",
+    "click #chan_nav a": "preOpenUserPane"
+  },
+
+  openUserPane: function(paneName) {
+    // Activated tabs
+    $('#chan_nav a[href="#' + paneName + '"]').find('span.badge').text(0);
+    $('#chan_nav a[href="#' + paneName + '"]').css('display','block');
+
+    // Activated nicks
+    $('#nick-tabs .nicks-pane').css('display','none');
+    $('#nicks_' + paneName).css('display','block');
+  },
+
+  preOpenUserPane: function(e) {
+    if (!$(e.target).hasClass("icon-remove")) {
+      this.openUserPane($(e.target).attr("href").substring(1));
+    }
   },
 
   initialize: function () {
@@ -29,16 +46,31 @@ App.Views.LeftNav = Backbone.View.extend({
     var paneId = "#" + id.replace("nicks_", "");
     var server = $(paneId).data("ircinfo");
     var pane_name = App.paneNamer(server.server.server, username);
-    this.openPrivatePane(username, server, pane_name, [username, server.server.nickname]);
-    $('#' + this.el.id + ' a[href="#' + pane_name + '"]').tab('show');
+    if ($('#' + pane_name).length == 0 && username !== server.server.nickname) {
+      this.openPrivatePane(username, server, pane_name, [username, server.server.nickname]);
+      $('#' + this.el.id + ' a[href="#' + pane_name + '"]').tab('show');
+      this.openUserPane(pane_name);
+    }
   },
 
   openPrivatePane: function(username, server, pane_name, users) {
-    if ($('#' + pane_name).length == 0 && username !== server.server.nickname) {
-      this.addPrivateChannel(pane_name, username);
-      App.createdViews.ChanPane.addChannel(pane_name, server.server, username);
-      App.attachNicks(server.server.server, username, users);
-    }
+    this.addPrivateChannel(pane_name, username);
+    App.createdViews.ChanPane.addChannel(pane_name, server.server, username);
+    this.attachNicks(server.server.server, username, users);
+  },
+
+  attachNicks: function(server, chan, nicks) {
+    var that = this;
+    var html = "";
+    var domElt = "#nicks_" + App.paneNamer(server, chan);
+    _.each(nicks, function(nick){
+      html += that.htmlUserPaneDiv(nick);
+    });
+    $(domElt).html(html);
+  },
+
+  htmlUserPaneDiv: function(nick) {
+    return '<div class="nick-pane-elt username_' + nick + '">' + nick + '</div>';
   }
 
 });
