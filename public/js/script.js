@@ -6,19 +6,6 @@ App.paneNamer = function(servername, channame){
 	return servername.replace(/\./g,'-') + "___" + channame.replace('#','_');
 }
 
-App.attachNicks = function(server, chan, nicks) {
-	var html = "";
-	var domElt = "#nicks_" + App.paneNamer(server, chan);
-	_.each(nicks, function(nick){
-		html += App.htmlUserPaneDiv(nick);
-	});
-	$(domElt).html(html);
-}
-
-App.htmlUserPaneDiv = function(nick) {
-	return '<div class="nick-pane-elt username_' + nick + '">' + nick + '</div>';
-}
-
 var last_message_date = 0;
 var hw_conf = [];
 var sessionTK = '';
@@ -69,7 +56,7 @@ var init_co = _.bind(function(){
 		if (m.to == m.server.nick) {
 			var pn = App.paneNamer(m.server.server, m.from);
 			if ($(pn).length == 0) {
-				App.createdViews.ChanPane.openPrivatePane(m.from, m, pn, [m.to, m.from]);
+				App.createdViews.LeftNav.openPrivatePane(m.from, m, pn, [m.to, m.from]);
 			}
 		} else {
 			var pn = App.paneNamer(m.server.server, m.to);
@@ -86,7 +73,7 @@ var init_co = _.bind(function(){
 
 	socket.on('nicks', _.bind(function (m) {
 		_.each(m, function(elt) {
-			App.attachNicks(elt.server, elt.chan, elt.users);
+			App.createdViews.LeftNav.attachNicks(elt.server, elt.chan, elt.users);
 		});
 	}, this));
 	
@@ -118,14 +105,7 @@ var init_co = _.bind(function(){
 			  }
 		  }
 		  $().tab();
-		 $('#nick-tabs .nicks-pane').css('display','none');
- 	    $('a[data-toggle="pill"]').on('shown', function (e) {
- 				$(e.target).find('span.badge').text(0); // activated tab
- 		  });	
- 	    $('a[data-toggle="pill"]').on('shown', function (e) {
-			 $('#nick-tabs .nicks-pane').css('display','none');
- 			 $('#nicks_'+$(e.target).attr('href').substring(1)).css('display','block'); // activated tab
- 		  });	
+		  $('#nick-tabs .nicks-pane').css('display','none');
 	  }
 	});
 	
