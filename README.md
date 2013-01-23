@@ -25,7 +25,6 @@ or deploy it on the http://www.clever-cloud.com with just a git push :-)
 #TODO
 * display notification message
 * display members of the chan
-* allow to connect to password protected chan
 * allow PM
 
 
