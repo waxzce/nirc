@@ -108,6 +108,8 @@ var left_channel = function(channel, nick, message) {
 }
 
 var paneNamer = function(servername, channame){
+	var i = channame.indexOf(' ');
+	channame = (i != -1 ? channame.substring(0, i): channame);
 	return servername.replace(/\./g,'-') + "___" + channame.replace('#','_');
 };
 
