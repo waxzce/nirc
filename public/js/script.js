@@ -101,6 +101,9 @@ var init_co = _.bind(function(){
 			  $('#chan_nav').append('<li class="nav-header">'+s.server+'</li>');
 			  for(var ii in s.options.channels){
 				  var c = s.options.channels[ii];
+			     var y = c.indexOf(' ');
+				  c = (y != -1 ? c.substring(0, y): c);
+				  
 				  var pane_name = App.paneNamer(s.server, c);
 				  App.createdViews.LeftNav.addChannel(pane_name, c);
 				  App.createdViews.ChanPane.addChannel(pane_name, s, c);
