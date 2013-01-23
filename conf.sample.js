@@ -31,7 +31,7 @@ config.servers =  [
 		 "autoRejoin":true,
 	    "userName": "n00b_user",
 	    "realName": "n00b user",
-		 "channels":["#clevercloud"]
+		 "channels":["#clevercloud","#privateChan chan_pass"]
 	 }
 	}
 ];
