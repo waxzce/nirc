@@ -190,6 +190,23 @@ io.sockets.on('connection', function (socket) {
 		}
 		
    });
+   
+	socket.on('get_30_old_message', function(o){
+		if(o.to_time != undefined){
+         
+         
+			   	var q = clientdb.query({
+				   	name: 'looking for old messages without time',
+				   	text: "SELECT * FROM message WHERE chan_name = $1 AND mdate < to_timestamp("+o.to_time+") ORDER BY mdate DESC LIMIT 30",
+						values:[o.pn]
+					});
+					q.on('row', stream_row.bind(socket));
+		}else{
+			
+	   	
+		}
+		
+   });
 
   socket.on('get_connected_users', function(e){
     var nicks = [];
