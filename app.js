@@ -13,6 +13,8 @@ var config = require('./conf')
   , clients_irc = []
   , cookieParser = express.cookieParser();
 
+io.set('log level', 1); // reduce logging
+
 server.listen(8080);
 
 app.configure(function() {
