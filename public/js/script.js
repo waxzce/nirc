@@ -25,7 +25,7 @@ var init_co = _.bind(function(){
 	var print_message = function(m,pn){
 		var h = hex_md5(pn+m.from+m.mdate+m.message);
 		if($('#messageid_'+h).length == 0){
-			var e = $('<div class="irc_line" id="messageid_'+h+'"><span class="username">'+m.from+' : </span><span class="message">'+m.message.replace(/(<([^>]+)>)/ig,"&lt;$1&gt;")+'</span><span class="mdate">'+moment(m.mdate).fromNow()+'</span></div>');
+			var e = $('<div class="irc_line" id="messageid_'+h+'"><span class="username">'+m.from+' : </span><span class="message">'+m.message.replace(/(<([^>]+)>)/ig,"&lt;&gt;")+'</span><span class="mdate">'+moment(m.mdate).fromNow()+'</span></div>');
 			var esan = e.find('span.message');
 			esan.linkify({target:'_blank'});
 			esan.highlight(hw_conf,{ wordsOnly: true });
