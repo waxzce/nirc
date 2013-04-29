@@ -13,6 +13,8 @@ var config = require('./conf')
   , clients_irc = []
   , cookieParser = express.cookieParser();
 
+io.set('log level', 1); // reduce logging
+
 server.listen(8080);
 
 app.configure(function() {
@@ -180,12 +182,29 @@ io.sockets.on('connection', function (socket) {
 					var pn = paneNamer(s.server, c);
 			   	var q = clientdb.query({
 				   	name: 'looking for old messages without time',
-				   	text: "SELECT * FROM message WHERE chan_name = $1 ORDER BY mdate DESC LIMIT 30",
+				   	text: "SELECT * FROM message WHERE chan_name = $1 ORDER BY mdate DESC LIMIT 90",
 						values:[pn]
 					});
 					q.on('row', stream_row.bind(socket));
 				});
 			},this);
+	   	
+		}
+		
+   });
+   
+	socket.on('get_30_old_message', function(o){
+		if(o.to_time != undefined){
+         
+         
+			   	var q = clientdb.query({
+				   	name: 'looking for old messages with time',
+				   	text: "SELECT * FROM message WHERE chan_name = $1 AND mdate < to_timestamp("+o.to_time+") ORDER BY mdate DESC LIMIT 90",
+						values:[o.pn]
+					});
+					q.on('row', stream_row.bind(socket));
+		}else{
+			
 	   	
 		}
 		
