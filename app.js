@@ -132,6 +132,9 @@ for(var i in clients_irc){
 	c.addListener('new_message',db_reccord);
   c.addListener('join', join_channel.bind(c));
   c.addListener('part',left_channel);
+  c.addListener('error', function(message) {
+    console.log('error: ', message);
+  });
 }
 
 io.set('authorization', function (data, accept) {
